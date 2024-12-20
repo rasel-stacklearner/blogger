@@ -37,9 +37,7 @@ async function getPost(id: string): Promise<Post> {
   return response.json();
 }
 
-export default async function PostPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
+export default async function PostPage({ params }: { params: { id: string } }) {
   const post = await getPost(params.id);
 
   return (
