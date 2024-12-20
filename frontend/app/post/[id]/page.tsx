@@ -29,8 +29,7 @@ async function getPost(id: string): Promise<Post> {
   console.log("EnV", process.env.NEXT_PUBLIC_BACKEND_URL);
 
   const response = await fetch(
-    // `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${id}`,
-    `https://xyz.stacklearner.org/api/posts/${id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${id}`,
     {
       cache: "no-store",
     }

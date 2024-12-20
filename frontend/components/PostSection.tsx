@@ -26,7 +26,7 @@ const PostSection = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          `https://server1-cmcw9kys.b4a.run/api/posts`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`
         );
         console.log("Response", response);
 
