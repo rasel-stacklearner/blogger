@@ -61,7 +61,7 @@ router.get("/posts/:id", async (req: Request, res: Response): Promise<any> => {
     logger.info("Cache miss fo post details - data fetched from database");
     res.json(transformedResult);
   } catch (error) {
-    logger.error("Error fetching post details:", error);
+    logger.error(`Error fetching post details: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -101,7 +101,7 @@ router.get("/posts", async (_req: Request, res: Response): Promise<any> => {
     // logger.info("Cache miss for all posts - data fetched from database");
     res.json(result);
   } catch (error) {
-    logger.error("Error fetching all posts: ", error);
+    logger.error(`Error fetching all posts: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -145,7 +145,7 @@ router.post("/posts", async (req: Request, res: Response): Promise<any> => {
       });
     }
 
-    logger.error("Error creating post:", error);
+    logger.error(`Error creating post: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 });

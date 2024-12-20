@@ -16,11 +16,15 @@ export const logger = pino({
       messageFormat: "{msg}",
     },
   },
+  serializers: {
+    err: pino.stdSerializers.err,
+    error: pino.stdSerializers.err,
+  },
 });
 
 export const httpLogger = pinoHttp({
   logger,
-  autoLogging: false,
+  autoLogging: true,
   customSuccessMessage: function (req: IncomingMessage, res: ResponseWithTime) {
     return `${req.method} ${req.url} ${res.statusCode} - ${res.responseTime}ms`;
   },
@@ -29,6 +33,7 @@ export const httpLogger = pinoHttp({
     res: ResponseWithTime,
     error: Error
   ) {
+    console.error("Error", error);
     return `${req.method} ${req.url} ${res.statusCode} - ${res.responseTime}ms - Error: ${error.message}`;
   },
   customProps: function (_req: IncomingMessage, _res: ResponseWithTime) {
