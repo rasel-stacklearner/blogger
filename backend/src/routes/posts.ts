@@ -78,33 +78,28 @@ router.get("/posts", async (_req: Request, res: Response): Promise<any> => {
     //   return res.json(JSON.parse(cachedData));
     // }
 
-    try {
-      // If not in cache, fetch from database
-      const result = await db
-        .select({
-          id: posts.id,
-          title: posts.title,
-          content: posts.content,
-          createdAt: posts.createdAt,
-          author: {
-            id: users.id,
-            name: users.name,
-            email: users.email,
-          },
-        })
-        .from(posts)
-        .leftJoin(users, eq(posts.authorId, users.id))
-        .orderBy(desc(posts.createdAt));
+    // If not in cache, fetch from database
+    const result = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        content: posts.content,
+        createdAt: posts.createdAt,
+        author: {
+          id: users.id,
+          name: users.name,
+          email: users.email,
+        },
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
+      .orderBy(desc(posts.createdAt));
 
-      // Cache the result for 5 minutes
-      // await redis.setex(cacheKey, 300, JSON.stringify(result));
+    // Cache the result for 5 minutes
+    // await redis.setex(cacheKey, 300, JSON.stringify(result));
 
-      // logger.info("Cache miss for all posts - data fetched from database");
-      res.json(result);
-    } catch (error) {
-      logger.error(`Error fetching all posts: ${error}`);
-      res.status(500).json({ error: "Internal server error" });
-    }
+    // logger.info("Cache miss for all posts - data fetched from database");
+    res.json(result);
   } catch (error) {
     logger.error(`Error fetching all posts: ${error}`);
     res.status(500).json({ error: "Internal server error" });
