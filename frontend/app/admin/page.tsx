@@ -123,7 +123,12 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <div>
+          <Link href="/" className="text-blue-500 hover:text-blue-600">
+            Home
+          </Link>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        </div>
         <Link
           href="/admin/user"
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { db } from "../db";
 import { posts, users, comments } from "../db/schema";
-import { eq, desc, aliasedTable } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import redis from "../config/redis";
 import { logger } from "../utils/logger";
 import { z } from "zod";
@@ -12,15 +12,14 @@ const router: Router = Router();
 router.get("/posts/:id", async (req: Request, res: Response): Promise<any> => {
   const postId = req.params.id;
   const cacheKey = `post:${postId}:details`;
-  const commentAuthors = aliasedTable(users, "commentAuthors");
 
   try {
     // Check cache first
-    // const cachedData = await redis.get(cacheKey);
-    // if (cachedData) {
-    //   logger.info("Cache hit for post details");
-    //   return res.json(JSON.parse(cachedData));
-    // }
+    const cachedData = await redis.get(cacheKey);
+    if (cachedData) {
+      logger.info("Cache hit for post details");
+      return res.json(JSON.parse(cachedData));
+    }
 
     let result = await db
       .select({
@@ -57,7 +56,7 @@ router.get("/posts/:id", async (req: Request, res: Response): Promise<any> => {
     console.log(transformedResult);
 
     // Cache the result for 5 minutes
-    // await redis.setex(cacheKey, 300, JSON.stringify(transformedResult));
+    await redis.setex(cacheKey, 300, JSON.stringify(transformedResult));
 
     logger.info("Cache miss fo post details - data fetched from database");
     res.json(transformedResult);
