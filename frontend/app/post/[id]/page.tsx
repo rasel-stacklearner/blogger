@@ -37,8 +37,18 @@ async function getPost(id: string): Promise<Post> {
   return response.json();
 }
 
-export default async function PostPage({ params }: { params: { id: string } }) {
-  const post = await getPost(params.id);
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function PostPage({
+  params,
+}: Readonly<{ params: { id: string } }>) {
+  const id = (await params).id;
+  const post = await getPost(id);
 
   return (
     <div className="container mx-auto px-4 py-8">

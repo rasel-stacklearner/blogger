@@ -19,6 +19,7 @@ WORKDIR /app
 # Install pnpm in builder stage
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml ./
