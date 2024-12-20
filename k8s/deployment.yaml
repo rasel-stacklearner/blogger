@@ -16,15 +16,15 @@ spec:
         app: nextjs-app
     spec:
       containers:
-        # - name: frontend
-        #   image: imranhasan871/nextjs-frontend:latest
-        #   ports:
-        #     - containerPort: 3000
-        #   env:
-        #     - name: PORT
-        #       value: "3000"
-        #     - name:
-        #       value: http://nextjs-backend.default.svc.cluster.local:3001
+        - name: frontend
+          image: imranhasan871/nextjs-frontend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NEXT_PUBLIC_BACKEND_URL
+              value: http://nextjs-backend.default.svc.cluster.local:3001
         - name: backend
           image: imranhasan871/nextjs-backend:latest
           ports:
@@ -38,21 +38,36 @@ spec:
               value: redis.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: frontend
-#   namespace: default
-# spec:
-#   selector:
-#     app: nextjs-app
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 3000
-#   type: ClusterIP
-# ---
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: default
+spec:
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+  type: ClusterIP
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -72,27 +87,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: backend
+                name: frontend
                 port:
                   number: 80
-
   tls:
     - hosts:
         - test.stacklearner.org
       secretName: test-stacklearner-org-tls
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-  namespace: default
-spec:
-  selector:
-    app: nextjs-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3001
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -123,6 +125,7 @@ spec:
               value: postgres
             - name: POSTGRES_DB
               value: demo_app
+
 ---
 apiVersion: v1
 kind: Service
@@ -137,6 +140,7 @@ spec:
       port: 5432
       targetPort: 5432
   type: ClusterIP
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -160,6 +164,7 @@ spec:
           image: redis:7
           ports:
             - containerPort: 6379
+
 ---
 apiVersion: v1
 kind: Service
@@ -173,3 +178,4 @@ spec:
     - protocol: TCP
       port: 6379
       targetPort: 6379
+  type: ClusterIP

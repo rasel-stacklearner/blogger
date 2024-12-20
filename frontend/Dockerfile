@@ -19,7 +19,6 @@ WORKDIR /app
 # Install pnpm in builder stage
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml ./
@@ -58,6 +57,9 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Add environment variable for backend URL
+ENV NEXT_PUBLIC_BACKEND_URL=http://nextjs-backend.default.svc.cluster.local:3001
 
 USER nextjs
 
