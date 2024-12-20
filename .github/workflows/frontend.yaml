@@ -18,6 +18,6 @@ jobs:
 
             - name: Build and push Cart service Docker image
               run: |
-                  cd backend 
+                  cd frontend 
                     docker build -t $DOCKER_USERNAME/nextjs-frontend .
                     docker push $DOCKER_USERNAME/nextjs-frontend
