@@ -15,9 +15,12 @@ app.use(
   cors({
     origin: [
       "https://blogger-ebon.vercel.app",
-      "https://blogger-git-feat-application-deploy-rasels-projects-19114265.vercel.app/",
+      "https://blogger-git-feat-application-deploy-rasels-projects-19114265.vercel.app",
       "http://localhost:3000",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
