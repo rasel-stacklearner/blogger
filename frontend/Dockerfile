@@ -59,7 +59,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # Add environment variable for backend URL
-ENV NEXT_PUBLIC_BACKEND_URL=http://nextjs-backend.default.svc.cluster.local:3001
+ENV NEXT_PUBLIC_BACKEND_URL=http://backend.default.svc.cluster.local
 
 USER nextjs
 
