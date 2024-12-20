@@ -18,6 +18,7 @@ COPY . .
 
 
 RUN pnpm db:generate
+RUN pnpm db:migrate
 
 # Build TypeScript
 RUN pnpm build

@@ -1,11 +1,11 @@
 import express from "express";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import cors from "cors";
 import { requestLogger, logger } from "./utils/logger";
 import postsRouter from "./routes/posts";
 import usersRouter from "./routes/users";
 
-dotenv.config();
+config();
 
 const app = express();
 const port = process.env.PORT || 3000;
