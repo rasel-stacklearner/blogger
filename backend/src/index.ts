@@ -11,9 +11,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+
 app.use(express.json());
 app.use(requestLogger);
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://blogger-mauve.vercel.app"],
+  })
+);
 
 // Routes
 app.use("/api", postsRouter);
