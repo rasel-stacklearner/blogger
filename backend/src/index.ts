@@ -27,7 +27,9 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    logger.error(err);
+    console.log(err);
+
+    // logger.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 );

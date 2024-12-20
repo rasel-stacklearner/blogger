@@ -51,9 +51,9 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy necessary files
 COPY --from=builder /app/public ./public
-# COPY --from=builder /app/.next/static ./.next/static
-# COPY --from=builder /app/.next/server ./.next/server
-# COPY --from=builder /app/.next/types ./.next/types
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next/server ./.next/server
+COPY --from=builder /app/.next/types ./.next/types
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json

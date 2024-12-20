@@ -26,9 +26,12 @@ interface Post {
 }
 
 async function getPost(id: string): Promise<Post> {
-  const response = await fetch(`${process.env.BACKEND_URL}/api/posts/${id}`, {
-    cache: "no-store",
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${id}`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch post");
