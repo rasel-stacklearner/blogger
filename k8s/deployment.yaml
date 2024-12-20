@@ -24,7 +24,7 @@ spec:
             - name: PORT
               value: "3000"
             - name: NEXT_PUBLIC_BACKEND_URL
-              value: http://nextjs-backend.default.svc.cluster.local:3001
+              value: http://backend.default.svc.cluster.local
         - name: backend
           image: imranhasan871/nextjs-backend:latest
           ports:
@@ -94,6 +94,32 @@ spec:
     - hosts:
         - test.stacklearner.org
       secretName: test-stacklearner-org-tls
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextjs-ingress2
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: xyz.stacklearner.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - xyz.stacklearner.org
+      secretName: test-stacklearner-org-tls2
 
 ---
 apiVersion: apps/v1
