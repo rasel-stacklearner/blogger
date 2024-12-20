@@ -26,6 +26,8 @@ interface Post {
 }
 
 async function getPost(id: string): Promise<Post> {
+  console.log("EnV", process.env.NEXT_PUBLIC_BACKEND_URL);
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${id}`,
     {
