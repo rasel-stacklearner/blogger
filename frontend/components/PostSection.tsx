@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
 
 import { useEffect, useState } from "react";
@@ -25,7 +26,9 @@ const PostSection = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`
+        );
         console.log("Response", response);
 
         if (!response.ok) {
@@ -69,7 +72,12 @@ const PostSection = () => {
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
           >
             <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+              <Link
+                href={`/post/${post.id}`}
+                className="text-xl font-semibold mb-2 text-blue-500 underline"
+              >
+                {post.title}
+              </Link>
               <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
                 {post.content}
               </p>
