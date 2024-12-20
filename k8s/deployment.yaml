@@ -33,7 +33,7 @@ spec:
             - name: PORT
               value: "3001"
             - name: DATABASE_URL
-              value: postgres://postgres:postgres@postgres.default.svc.cluster.local:5432/demo_app
+              value: postgresql://metabase:mysecretpassword@170.187.228.254:5432/demo-db
             - name: REDIS_HOST
               value: redis.default.svc.cluster.local
             - name: REDIS_PORT
@@ -134,6 +134,8 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+  type: NodePort
+  nodePort: 30007
 ---
 apiVersion: apps/v1
 kind: Deployment
