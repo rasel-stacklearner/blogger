@@ -17,6 +17,8 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 
+RUN pnpm db:generate
+
 # Build TypeScript
 RUN pnpm build
 
