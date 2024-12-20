@@ -25,9 +25,7 @@ const PostSection = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`
-        );
+        const response = await fetch(`https://xyz.stacklearner.org/api/posts`);
         console.log("Response", response);
 
         if (!response.ok) {
