@@ -1,44 +1,83 @@
-import pino from "pino";
-import pinoHttp from "pino-http";
-import { IncomingMessage, ServerResponse } from "http";
+import { Request, Response, NextFunction } from "express";
+import redis from "../config/redis";
 
-interface ResponseWithTime extends ServerResponse<IncomingMessage> {
-  responseTime?: number;
+interface LogData {
+  method: string;
+  path: string;
+  responseTime: string;
+  statusCode: number;
 }
 
-export const logger = pino({
-  transport: {
-    target: "pino-pretty",
-    options: {
-      colorize: true,
-      translateTime: "HH:MM:ss",
-      ignore: "pid,hostname,reqId",
-      messageFormat: "{msg}",
-    },
+export const logger = {
+  info: (message: string, data?: any) => {
+    console.log(
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          level: "info",
+          message,
+          ...data,
+        },
+        null,
+        2
+      )
+    );
   },
-  serializers: {
-    error: pino.stdSerializers.err,
-    req: pino.stdSerializers.req,
-    res: pino.stdSerializers.res,
-  },
-});
 
-export const httpLogger = pinoHttp({
-  logger,
-  autoLogging: true,
-  customSuccessMessage: function (req: IncomingMessage, res: ResponseWithTime) {
-    return `${req.method} ${req.url} ${res.statusCode}`;
+  error: (message: string, error?: any) => {
+    console.error(
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          level: "error",
+          message,
+          error: error?.message || error,
+        },
+        null,
+        2
+      )
+    );
   },
-  customErrorMessage: function (
-    req: IncomingMessage,
-    res: ResponseWithTime,
-    error: Error
+};
+
+// Middleware to log HTTP requests
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const start = Date.now();
+
+  // Add response time tracking
+  const oldEnd = res.end;
+  res.end = function (
+    chunk?: any,
+    encoding?: BufferEncoding | (() => void),
+    cb?: () => void
   ) {
-    return `${req.method} ${req.url} ${res.statusCode} - ${res.responseTime}ms - Error: ${error.message}`;
-  },
-  customProps: function (_req: IncomingMessage, _res: ResponseWithTime) {
-    return {
-      // Return empty object to remove additional props
+    const responseTime = Date.now() - start;
+    const logData: LogData = {
+      responseTime: `${responseTime}ms`,
+      method: req.method,
+      path: req.path,
+      statusCode: res.statusCode,
     };
-  },
-});
+
+    // Log based on status code
+    if (res.statusCode >= 400) {
+      logger.error("Request failed", logData);
+    } else {
+      logger.info("Request completed", logData);
+    }
+
+    // only save the log data ont error
+    try {
+      redis.lpush("app:request:logs", JSON.stringify(logData));
+    } catch (error) {
+      console.error("Failed to save request log to Redis:", error);
+    }
+    return oldEnd.apply(res, [chunk, encoding as BufferEncoding, cb]);
+  };
+
+  next();
+};

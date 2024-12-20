@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { httpLogger, logger } from "./utils/logger";
+import { requestLogger, logger } from "./utils/logger";
 import postsRouter from "./routes/posts";
 import usersRouter from "./routes/users";
 
@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(httpLogger);
+app.use(requestLogger);
 
 // Routes
 app.use("/api", postsRouter);
@@ -27,9 +27,7 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    console.log(err);
-
-    // logger.error(err);
+    logger.error(err?.message);
     res.status(500).json({ error: "Internal server error" });
   }
 );
