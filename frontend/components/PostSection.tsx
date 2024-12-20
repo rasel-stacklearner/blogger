@@ -25,7 +25,9 @@ const PostSection = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`https://xyz.stacklearner.org/api/posts`);
+        const response = await fetch(
+          `https://server1-cmcw9kys.b4a.run/api/posts`
+        );
         console.log("Response", response);
 
         if (!response.ok) {
