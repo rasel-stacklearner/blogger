@@ -1,0 +1,24 @@
+name: Build and Push Docker Images
+
+on:
+    push:
+      - main
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Login to Docker Hub
+              run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+
+            - name: Build and push Cart service Docker image
+              run: |
+                  cd backend 
+                    docker build -t $DOCKER_USERNAME/nextjs-backend .
+                    docker push $DOCKER_USERNAME/nextjs-backend
